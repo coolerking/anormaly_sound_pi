@@ -22,6 +22,7 @@ pip install numpy==1.22.1 -U
 pip install h5py==3.6.0
 pip install pybind11
 pip install six wheel mock -U
+pip install sklearn
 mkdir ~/projects
 cd ~/projects
 wget "https://raw.githubusercontent.com/PINTO0309/Tensorflow-bin/main/tensorflow-2.8.0-cp39-none-linux_aarch64_numpy1221_download.sh"
@@ -30,5 +31,70 @@ chmod +x tensorflow-2.8.0-cp39-none-linux_aarch64_numpy1221_download.sh
 pip install tensorflow-2.8.0-cp39-none-linux_aarch64.whl
 git clone https://github.com/coolerking/anormaly_sound_pi.git
 cd anormaly_sound_pi
-python detect_sound_index.py
+git checkout main
 ```
+
+## マイクUSBデバイス番号確認
+
+マイクデバイスをRaspberry Pi USBコネクタに接続し、以下のコマンドを実行する。
+
+```bash
+cd ~/projects/anormaly_sound_pi/anormaly_sound_pi
+python detect.py
+```
+
+Raspberry Pi(USB) にSoundBlasterを接続、マイクコネクタにピンマイクを差した状態での実行結果の一部は以下の通り。
+
+```json
+{'index': 0, 'structVersion': 2, 'name': 'bcm2835 Headphones: - (hw:0,0)', 'hostApi': 0, 'maxInputChannels': 0, 'maxOutputChannels': 8, 'defaultLowInputLatency': -1.0, 'defaultLowOutputLatency': 0.0016099773242630386, 'defaultHighInputLatency': -1.0, 'defaultHighOutputLatency': 0.034829931972789115, 'defaultSampleRate': 44100.0}
+{'index': 1, 'structVersion': 2, 'name': 'Sound Blaster Play! 3: USB Audio (hw:1,0)', 'hostApi': 0, 'maxInputChannels': 2, 'maxOutputChannels': 2, 'defaultLowInputLatency': 0.008684807256235827, 'defaultLowOutputLatency': 0.008684807256235827, 'defaultHighInputLatency': 0.034829931972789115, 'defaultHighOutputLatency': 0.034829931972789115, 'defaultSampleRate': 44100.0}
+:
+```
+
+上記の例の場合、Sound Blasterのデバイスインデックスは `1` であることがわかる。
+
+## 学習データ(wavファイル)の収集
+
+**正常** な音声を録音して、学習データとして使用する。
+Raspberry Pi に接続したマイクを対象に向ける。
+デバイスインデックスが`1`の場合、以下のように実行する。
+
+```bash
+cd ~/projects/anormaly_sound_pi/anormaly_sound_pi
+python record.py --sec 10 --filename train_normal.wav --device_index 1
+```
+
+上記の例では、10秒間収集し、`train_normal.wav` ファイルとして保存する。
+
+## トレーニング処理実行
+
+学習データを `train_normal.wav` とした場合、以下のように実行する。
+
+```bash
+python train.py --train train_normal.wav --model anormaly.h5
+```
+
+上記の場合、学習済みモデルファイル `anormaly.h5` が作成される。
+
+## 音声ファイルの評価
+
+学習済みモデルファイル `anormaly.h5` 、評価対象の音声ファイルが `eval.wav` である場合、次のように実行する。
+
+```bash
+python eval.py --eval eval.wav --model anormaly.h5
+```
+
+以下、実行例。
+
+```bash
+Namespace(eval='eval.wav', model='anomaly.h5', input_size=20)
+/home/pi/projects/anormaly_sound_pi/anormaly_sound_pi/eval.py:43: WavFileWarning: Chunk (non-data) not understood, skipping it.
+  (rate,sig) = wav.read(Datafile)
+Score:  1.2546335234695254
+```
+
+正常な音声と異常時の音声を複数何度か繰り返し、正常と異常を切り分けるスコア値をみつける。
+
+## ライセンス
+
+[MITライセンス](./LICENSE) 準拠とする。
