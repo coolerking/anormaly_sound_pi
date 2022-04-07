@@ -11,7 +11,7 @@ parser.add_argument('--sec', type=int, default=3, help='recording time(sec)')
 parser.add_argument('--filename', type=str, default='test.wav', help='record filename')
 parser.add_argument('--dev_index', type=int, default=1, help='USB mic index no')
 args = parser.parse_args()
-print(args)
+#print(args)
 
 '''
 初期値
