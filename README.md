@@ -4,6 +4,8 @@ Raspberry Pi にUSBマイクを接続して、音声異常検知をおこなう�
 
 ## セットアップ
 
+> Windows 環境で試行する場合は https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio よりwhlファイルを取得し、pip installする
+
 ```shell
 sudo apt-get install build-essential python3 python3-dev python3-pip python3-virtualenv python3-numpy python3-pandas python3-pillow
 sudo apt-get install libportaudio2 libportaudiocpp0 portaudio19-dev
@@ -18,4 +20,3 @@ git clone https://github.com/coolerking/anormaly_sound_pi.git
 cd anormaly_sound_pi
 python detect_sound_index.py
 ```
-
