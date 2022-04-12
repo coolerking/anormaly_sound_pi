@@ -47,7 +47,7 @@ dev_index = args.dev_index
 """
 初期値: 出力ファイル名
 """
-wav_filename = data_rotate(path=args.data_dir, age=args.age)
+wav_filename = data_rotate(path=args.datadir, age=args.age)
 
 # PyAudio インスタンス化
 audio = pyaudio.PyAudio()
