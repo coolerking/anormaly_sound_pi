@@ -62,6 +62,10 @@ if eval_path is not None:
         eval_path = get_latest_path(path=args.datadir)
 else:
     eval_path = get_latest_path(path=args.datadir)
+if debug:
+    print(eval_path)
+    print(args.datadir)
+    print(get_latest_path(path=args.datadir))
 if eval_path is None or not os.path.isfile(eval_path):
     if debug:
         print(f'eval path {str(eval_path)} not exist, stop.')
