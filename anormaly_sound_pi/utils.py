@@ -83,22 +83,26 @@ def _get_files(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFFI
         path += os.sep
         os.makedirs(path, exist_ok=True)
         path += '*'
-    print(path)
+    #print(path)
     files = glob.glob(path)
-    print(files)
-    if len(files) == 0 or (prefix is None and suffix is None):
+    #print(files)
+    if len(files) == 0 or ((prefix is None or prefix == '') and (suffix is None or suffix == '')):
         for file in files:
             matched_files.append(_get_path(path, file))
         return sorted(matched_files)
     for file in files:
         prefix_matched = False
-        if prefix is not None and len(prefix) != 0 and file.find(prefix) == 0:
+        if prefix is not None and len(prefix) > 0 and file.find(prefix) >= 0:
             prefix_matched = True
         elif prefix is None or len(prefix) == 0:
             prefix_matched = True
         if prefix_matched == False:
             continue
         suffix_matched = False
+        print(file)
+        print(suffix)
+        print(file.rfind(suffix))
+        print(len(file) - len(suffix))
         if suffix is not None and len(suffix) != 0 and file.rfind(suffix) == len(file) - len(suffix):
             suffix_matched = True
         elif suffix is None or len(suffix) == 0:
