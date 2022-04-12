@@ -19,6 +19,7 @@ parser.add_argument('--model', type=str, default='model\model.h5', help='trained
 parser.add_argument('--input_size', type=int, default=20, help='input data size')
 parser.add_argument('--port', type=int, default=5000, help='listen port')
 parser.add_argument('--debug', type=bool, default=False, help='print debug lines')
+parser.add_argument('--host', type=str, default='127.0.0.1', help='web server host address')
 args = parser.parse_args()
 
 
@@ -49,6 +50,11 @@ model = load_model(args.model)
 入力データのカラム数
 """
 input_size = args.input_size
+
+"""
+ホスト
+"""
+host = args.host
 
 """
 ポート
@@ -150,4 +156,4 @@ if __name__ == '__main__':
     """
     起動時のオプション処理を行い、Webアプリケーションを開始する。
     """
-    app.run(debug=debug,port=port)
+    app.run(debug=debug,host=host, port=port)
