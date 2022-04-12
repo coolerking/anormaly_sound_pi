@@ -53,7 +53,9 @@ eval_path = args.eval_path
 # 引数表示
 if debug:
     print(args)
-
+    print(eval_path)
+    print(args.datadir)
+    print(get_latest_path(path=args.datadir))
 # 評価対象音声ファイルの存在確認
 if eval_path is not None:
     if not os.path.isfile(eval_path):
