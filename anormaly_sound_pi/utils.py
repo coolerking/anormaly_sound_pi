@@ -83,7 +83,9 @@ def _get_files(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFFI
         path += os.sep
         os.makedirs(path, exist_ok=True)
         path += '*'
+    print(path)
     files = glob.glob(path)
+    print(files)
     if len(files) == 0 or (prefix is None and suffix is None):
         for file in files:
             matched_files.append(_get_path(path, file))
