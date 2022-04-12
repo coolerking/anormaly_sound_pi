@@ -13,7 +13,13 @@ parser.add_argument('--sec', type=int, default=3, help='recording time(sec)')
 parser.add_argument('--datadir', type=str, default=DATA_PATH, help='data directory path')
 parser.add_argument('--age', type=int, default=DATA_AGE, help='remained latest data file count')
 parser.add_argument('--dev_index', type=int, default=1, help='USB mic index no')
+parser.add_argument('--debug', type=bool, default=False, help='print debug lines')
 args = parser.parse_args()
+
+"""
+初期値：デバッグオプション
+"""
+debug = args.debug
 
 """
 初期値：ビット解像度(bit)
@@ -49,6 +55,10 @@ dev_index = args.dev_index
 """
 wav_filename = data_rotate(path=args.datadir, age=args.age)
 
+# 引数表示
+if debug:
+    print(args)
+
 # PyAudio インスタンス化
 audio = pyaudio.PyAudio()
 
@@ -60,13 +70,15 @@ stream = audio.open(
     input_device_index = dev_index,
     input = True,
     frames_per_buffer=chunk)
-print("recording")
+if debug:
+    print("recording")
 frames = []
 
 # 指定秒数の音声をchunkサイズごとに取得し、配列framesへ追加
 for _ in range(0, int((sampling_rate / chunk) * record_secs)):
     frames.append(stream.read(chunk))
-print("finished recording")
+if debug:
+    print("finished recording")
 
 # ストリームの停止およびクロース
 stream.stop_stream()
@@ -81,4 +93,5 @@ wavefile.setsampwidth(audio.get_sample_size(format))
 wavefile.setframerate(sampling_rate)
 wavefile.writeframes(b''.join(frames))
 wavefile.close()
-print('wrote to {}'.format(wav_filename))
+if debug:
+    print('wrote to {}'.format(wav_filename))

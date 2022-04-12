@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
-# 実行方法　python3 this.py datafile
+"""
+実行モジュール: 音声ファイルを評価し、スコアを返却する。
+
+python eval.py ... 
+echo $?
+
+エラーコードにScore値が返却される。
+エラーコード-1の場合、何も処理していない。
+"""
 
 import os
 import sys
@@ -18,9 +26,14 @@ parser.add_argument('--datadir', type=str, default=DATA_PATH, help='data directo
 parser.add_argument('--eval', type=str, defatlt=None, help='eval target wav filename')
 parser.add_argument('--model', type=str, default='model\model.h5', help='trained model filename')
 parser.add_argument('--input_size', type=int, default=20, help='input data size')
+parser.add_argument('--debug', type=bool, default=False, help='print debug lines')
 #parser.add_argument('--dev_index', type=int, default=1, help='USB mic index no')
 args = parser.parse_args()
-print(args)
+
+"""
+デバッグオプション
+"""
+debug = args.debug
 
 """
 入力データのカラム数
@@ -37,17 +50,24 @@ model_path = args.model
 """
 eval_path = args.eval
 
+# 引数表示
+if debug:
+    print(args)
+
 # 評価対象音声ファイルの存在確認
 if eval_path is None or not os.path.isfile(eval_path):
-    print(f'eval path {str(eval_path)} not exist.')
+    if debug:
+        print(f'eval path {str(eval_path)} not exist.')
     eval_path = get_latest_path(path=args.datadir)
 if eval_path is None or not os.path.isfile(eval_path):
-    print(f'eval path {str(eval_path)} not exist, stop.')
+    if debug:
+        print(f'eval path {str(eval_path)} not exist, stop.')
     sys.exit(-1)
 
 # 学習済みモデルファイルのロード
 if not os.path.exists(model_path):
-    print(f'model path {model_path} not exist, stop')
+    if debug:
+        print(f'model path {model_path} not exist, stop')
     sys.exit(-1)
 model = load_model(model_path)
 
@@ -62,5 +82,6 @@ detect_pred = model.predict(detect_data)
 
 # 異常判定スコア計算
 detect_score = mean_squared_error(detect_data, detect_pred)
-print(f'Score: {str(detect_score)}')
+if debug:
+    print(f'Score: {str(detect_score)}')
 sys.exit(detect_score)

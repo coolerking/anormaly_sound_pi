@@ -99,16 +99,16 @@ def _get_files(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFFI
         if prefix_matched == False:
             continue
         suffix_matched = False
-        print(prefix_matched)
-        print(file)
-        print(suffix)
-        print(file.rfind(suffix))
-        print(len(file) - len(suffix))
+        #print(prefix_matched)
+        #print(file)
+        #print(suffix)
+        #print(file.rfind(suffix))
+        #print(len(file) - len(suffix))
         if suffix is not None and len(suffix) != 0 and file.rfind(suffix) == len(file) - len(suffix):
             suffix_matched = True
         elif suffix is None or len(suffix) == 0:
             suffix_matched = True
-        print(suffix_matched)
+        #print(suffix_matched)
         if prefix_matched and suffix_matched:
             matched_files.append(file)
     return sorted(matched_files)
@@ -157,12 +157,12 @@ def data_rotate(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFF
         次に作成すべきファイルパス
     """
     remove_files = _get_files(path=path, prefix=prefix, suffix=suffix)[:(-1 * (age-1))]
-    print(path)
-    print(prefix)
-    print(suffix)
-    print(_get_files(path=path, prefix=prefix, suffix=suffix))
-    print(remove_files)
-    print(age)
+    #print(path)
+    #print(prefix)
+    #print(suffix)
+    #print(_get_files(path=path, prefix=prefix, suffix=suffix))
+    #print(remove_files)
+    #print(age)
     for remove_file in remove_files:
         os.remove(remove_file)
     return _get_date_format_path(path=path, prefix=prefix, suffix=suffix)
@@ -192,9 +192,9 @@ def get_latest_path(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_
         return None
 
 
-if __name__ == '__main__':
+#if __name__ == '__main__':
     #print(_get_date_format_path())
     #print(_get_date_format_path(path='hehehe', prefix='fufufu_', suffix='www'))
     #print(_get_files(path='anormaly_sound_pi', prefix='', suffix=''))
     #print(_get_files(path='anormaly_sound_pi', prefix='', suffix='wav'))
-    print(_get_files(path=DATA_PATH, prefix=DATA_PREFIX, suffix=DATA_SUFFIX))
+    #print(_get_files(path=DATA_PATH, prefix=DATA_PREFIX, suffix=DATA_SUFFIX))
