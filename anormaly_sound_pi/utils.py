@@ -191,6 +191,25 @@ def get_latest_path(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_
     else:
         return None
 
+def get_all_path(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFFIX) -> str:
+    """
+    引数に指定されたディレクトリ、先頭文字列・拡張子文字列を満たすファイルのすべてのパス（昇順）を返却する。
+
+    Parameters
+    --------
+    path: str, default DATA_PATH
+        ディレクトリ（存在しない場合、作成する）
+    prefix: str, default DATA_PREFIX
+        ファイル名先頭文字列
+    suffix: str, default DATA_SUFFIX
+        ファイル拡張子文字列
+    
+    Returns
+    --------
+    paths: array(syr)
+        ファイルパスリスト、存在しない場合は[]を返却
+    """
+    return _get_files(path=path, prefix=prefix, suffix=suffix)
 
 #if __name__ == '__main__':
     #print(_get_date_format_path())

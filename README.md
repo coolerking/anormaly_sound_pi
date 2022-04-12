@@ -23,6 +23,7 @@ pip install h5py==3.6.0
 pip install pybind11
 pip install six wheel mock -U
 pip install sklearn
+pip install flask
 mkdir ~/projects
 cd ~/projects
 wget "https://raw.githubusercontent.com/PINTO0309/Tensorflow-bin/main/tensorflow-2.8.0-cp39-none-linux_aarch64_numpy1221_download.sh"
