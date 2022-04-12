@@ -187,7 +187,7 @@ def get_latest_path(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_
     """
     files = _get_files(path=path, prefix=prefix, suffix=suffix)
     if len(files) > 0:
-        return files[-1:0][0]
+        return files[-1][0]
     else:
         return None
 
