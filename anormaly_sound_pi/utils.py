@@ -148,11 +148,13 @@ def data_rotate(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFF
     path: str
         次に作成すべきファイルパス
     """
-    remove_files = _get_files(path=path, prefix=DATA_PREFIX, suffix=DATA_SUFFIX)[:(-1 * (age-1))]
+    remove_files = _get_files(path=path, prefix=prefix, suffix=suffix)[:(-1 * (age-1))]
+    print(_get_files(path=path, prefix=prefix, suffix=suffix))
     print(remove_files)
+    print(age)
     for remove_file in remove_files:
         os.remove(remove_file)
-    return _get_date_format_path(path=path, prefix=DATA_PREFIX, suffix=DATA_SUFFIX)
+    return _get_date_format_path(path=path, prefix=prefix, suffix=suffix)
 
 def get_latest_path(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFFIX) -> str:
     """
@@ -172,7 +174,7 @@ def get_latest_path(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_
     path: str
         次に作成すべきファイルパス、存在しない場合はNoneを返却
     """
-    files = _get_files(path=path, prefix=DATA_PREFIX, suffix=DATA_SUFFIX)
+    files = _get_files(path=path, prefix=prefix, suffix=suffix)
     if len(files) > 0:
         return files[-1:0][0]
     else:
