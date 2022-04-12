@@ -183,10 +183,10 @@ def get_latest_path(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_
     else:
         return None
 
-'''
+
 if __name__ == '__main__':
     #print(_get_date_format_path())
     #print(_get_date_format_path(path='hehehe', prefix='fufufu_', suffix='www'))
-    print(_get_files(path='anormaly_sound_pi', prefix='', suffix=''))
-    print(_get_files(path='anormaly_sound_pi', prefix='', suffix='wav'))
-'''
+    #print(_get_files(path='anormaly_sound_pi', prefix='', suffix=''))
+    #print(_get_files(path='anormaly_sound_pi', prefix='', suffix='wav'))
+    print(_get_files(path=DATA_PATH, prefix=DATA_PREFIX, suffix=DATA_SUFFIX))
