@@ -21,7 +21,7 @@ from utils import DATA_PATH, get_latest_path
 '''
 引数管理
 '''
-parser = argparse.ArgumentParser(description='train AutoEncoder with wav format file')
+parser = argparse.ArgumentParser(description='evaluate a wav format file with the trained model')
 parser.add_argument('--datadir', type=str, default=DATA_PATH, help='data directory path')
 parser.add_argument('--eval_path', type=str, default=None, help='eval target wav filename')
 parser.add_argument('--model', type=str, default='model\model.h5', help='trained model filename')
