@@ -99,6 +99,7 @@ def _get_files(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFFI
         if prefix_matched == False:
             continue
         suffix_matched = False
+        print(prefix_matched)
         print(file)
         print(suffix)
         print(file.rfind(suffix))
@@ -107,6 +108,7 @@ def _get_files(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFFI
             suffix_matched = True
         elif suffix is None or len(suffix) == 0:
             suffix_matched = True
+        print(suffix_matched)
         if prefix_matched and suffix_matched:
             matched_files.append(file)
     return sorted(matched_files)
