@@ -186,6 +186,10 @@ def get_latest_path(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_
         次に作成すべきファイルパス、存在しない場合はNoneを返却
     """
     files = _get_files(path=path, prefix=prefix, suffix=suffix)
+    print(files)
+    print(len(files))
+    print(files[-1])
+    print(files[-1][0])
     if len(files) > 0:
         return files[-1][0]
     else:
