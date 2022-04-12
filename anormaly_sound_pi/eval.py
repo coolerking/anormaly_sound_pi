@@ -23,7 +23,7 @@ from utils import DATA_PATH, get_latest_path
 '''
 parser = argparse.ArgumentParser(description='train AutoEncoder with wav format file')
 parser.add_argument('--datadir', type=str, default=DATA_PATH, help='data directory path')
-parser.add_argument('--eval', type=str, defatlt='test.wav', help='eval target wav filename')
+parser.add_argument('--eval_path', type=str, defatlt=None, help='eval target wav filename')
 parser.add_argument('--model', type=str, default='model\model.h5', help='trained model filename')
 parser.add_argument('--input_size', type=int, default=20, help='input data size')
 parser.add_argument('--debug', type=bool, default=False, help='print debug lines')
@@ -48,7 +48,7 @@ model_path = args.model
 """
 評価対象音声ファイルパス
 """
-eval_path = args.eval
+eval_path = args.eval_path
 
 # 引数表示
 if debug:
