@@ -55,9 +55,12 @@ if debug:
     print(args)
 
 # 評価対象音声ファイルの存在確認
-if eval_path is None or not os.path.isfile(eval_path):
-    if debug:
-        print(f'eval path {str(eval_path)} not exist.')
+if eval_path is not None:
+    if not os.path.isfile(eval_path):
+        if debug:
+            print(f'eval path {str(eval_path)} not exist.')
+        eval_path = get_latest_path(path=args.datadir)
+else:
     eval_path = get_latest_path(path=args.datadir)
 if eval_path is None or not os.path.isfile(eval_path):
     if debug:
