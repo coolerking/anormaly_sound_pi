@@ -149,6 +149,7 @@ def data_rotate(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFF
         次に作成すべきファイルパス
     """
     remove_files = _get_files(path=path, prefix=DATA_PREFIX, suffix=DATA_SUFFIX)[:(-1 * (age-1))]
+    print(remove_files)
     for remove_file in remove_files:
         os.remove(remove_file)
     return _get_date_format_path(path=path, prefix=DATA_PREFIX, suffix=DATA_SUFFIX)
