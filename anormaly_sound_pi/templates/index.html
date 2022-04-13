@@ -25,6 +25,24 @@
                 data: data,
                 options: {}
             };
+
+            Array.prototype.equals = function (getArray) {
+                if (this.length != getArray.length) return false;
+                    for (var i = 0; i < getArray.length; i++) {
+                        if (this[i] instanceof Array && getArray[i] instanceof Array) {
+                            if (!this[i].equals(getArray[i])) return false;
+                        } else if (this[i] != getArray[i]) {
+                            return false;
+                        }
+                    }
+                    return true;
+            };
+            var myChart;
+            function drawChart(){
+                myChart = new Chart(
+                document.getElementById('myChart'),
+                config);
+            };
         </script>
         <link rel="shortcut icon" href="/static/images/favicon.ico">
     </head>
@@ -36,19 +54,20 @@
             <canvas id="myChart"></canvas>
         </div>
         <script>
-            var myChart = new Chart(
-                document.getElementById('myChart'),
-                config
-            );
+            drawChart();
             setInterval( function(){
                 $.ajax({
                     url: '/update',
                     type: 'GET',
                     data: {}
                 }).done( (msg) => {
-                        console.log(msg);
-                        labels = msg.labels;
-                        values = msg.values;
+                        console.log(labels.equals(msg.labels));
+                        if (labels.equals(msg.labels) == false) {
+                            labels = msg.labels;
+                            values = msg.values;
+                        };
+                        myChart.destroy();
+                        drawChart();
                 }).fail(msg => {
                     console.log('[Fail] ' + msg);
                 }).always((msg) => {});
