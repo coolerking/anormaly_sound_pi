@@ -111,6 +111,8 @@ def update():
             print(f'latest file {file} not exists.')
     else:
         print('latest file is None.')
+    print(result)
+    print(type(result))
     return jsonify(result)
 
 @app.route('/clear', methods=['GET'])
