@@ -65,8 +65,12 @@ port = args.port
 """
 音声異常検知辞書の更新
 """
-result = {}
-
+labels = []
+values = []
+result = {
+    'labels': labels,
+    'values': values,
+}
 def _get_score(file:str) -> float:
     """
     音声異常データファイルパス先のファイルを読み込み、異常判定スコアを算出する。
@@ -95,7 +99,8 @@ files = get_all_path(path=datadir)
 for file in files:
     # 異常判定スコア計算
     detect_score = _get_score(file)
-    result[file] = detect_score
+    labels.append(file)
+    values.append(detect_score)
 
 # アプリケーションオブジェクト生成
 app = Flask(__name__)
@@ -116,15 +121,18 @@ def update():
     result: dict
         音声異常検知辞書
     """
-    global result
+    global result, labels, values
     file = get_latest_path(path=datadir)
     if file is not None:
         if os.path.isfile(file):
             # 異常判定スコア計算
             detect_score = _get_score(file)
-            result[file] = detect_score
-            if debug:
-                print(f'update dict {str(result)}')
+            if file not in labels:
+                labels.append(file)
+                values.append(detect_score)
+                if debug:
+                    print(f'append label: {file}, value: {str(detect_score)}')
+                    print(f'update dict {str(result)}')
         elif debug:
             print(f'latest file {file} not exists.')
     else:
@@ -146,8 +154,10 @@ def clear_result():
     result: dict
         音声異常検知辞書
     """
-    global result
+    global result, labels, values
     result = {}
+    labels = []
+    values = []
     if debug:
         print('clear dict')
     return jsonify(result)
@@ -169,6 +179,8 @@ def show_index():
     if 'result' not in session:
         # 観測初期化
         session['result'] = result
+        #session['labels'] = labels
+        #session['values'] = values
     # /template/index.html を表示
     return render_template('index.html')
 
