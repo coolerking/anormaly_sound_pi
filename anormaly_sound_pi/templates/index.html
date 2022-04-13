@@ -76,13 +76,13 @@
                         if (config.data.labels.equals(msg.labels) == false) {
                             console.log('unmatch labels');
                             config.data.labels = msg.labels;
-                            config.data.datasets.data = msg.values;
+                            config.data.datasets[0].data = msg.values;
                             if(myChart) {
                                 myChart.destroy();
                                 console.log('destoy chart');
                             };
                             drawChart();
-                            console.log(config.data.datasets.data);
+                            console.log(config.data.datasets[0].data);
                         };
                 }).fail(msg => {
                     console.log('[Fail] ' + msg);
