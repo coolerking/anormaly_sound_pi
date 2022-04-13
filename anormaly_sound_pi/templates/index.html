@@ -63,7 +63,7 @@
                     data: {}
                 }).done( (msg) => {
                         console.log(config.data.labels.equals(msg.labels));
-                        if (labels.equals(msg.labels) == false) {
+                        if (config.data.labels.equals(msg.labels) == false) {
                             console.log('unmatch labels');
                             config.data.labels = msg.labels;
                             config.data.datasets.data = msg.values;
