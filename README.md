@@ -62,27 +62,30 @@ Raspberry Pi に接続したマイクを対象に向ける。
 
 ```bash
 cd ~/projects/anormaly_sound_pi/anormaly_sound_pi
-python record.py --sec 10 --filename train_normal.wav --device_index 1
+mkdir data
+python record.py --sec 10 --datadir data --device_index 1 --debug True --age 5
 ```
 
-上記の例では、10秒間収集し、`train_normal.wav` ファイルとして保存する。
+上記の例では、10秒間収集した音声データファイル(wav形式)をdataディレクトリに保存する。
+data ディレクトリには最新5世代の音声ファイルを残し、他のデータは削除する。
 
 ## トレーニング処理実行
 
-学習データを `train_normal.wav` とした場合、以下のように実行する。
+学習データを `data/mic_yyyymmdd_hhmmss.wav` とした場合、以下のように実行する。
 
 ```bash
-python train.py --train train_normal.wav --model anormaly.h5
+mkdir models
+python train.py --train data/mic_yyyymmdd_hhmmss.wav --model models/anormaly.h5
 ```
 
-上記の場合、学習済みモデルファイル `anormaly.h5` が作成される。
+上記の場合、学習済みモデルファイル `models/anormaly.h5` が作成される。
 
 ## 音声ファイルの評価
 
-学習済みモデルファイル `anormaly.h5` 、評価対象の音声ファイルが `eval.wav` である場合、次のように実行する。
+学習済みモデルファイル `models/anormaly.h5` 、評価対象の音声ファイルが `data/mic_yyyymmdd_hhmmss.wav` である場合、次のように実行する。
 
 ```bash
-python eval.py --eval eval.wav --model anormaly.h5
+python eval.py --eval data/mic_yyyymmdd_hhmmss.wav --model models/anormaly.h5 --debug True
 ```
 
 以下、実行例。
@@ -95,6 +98,20 @@ Score:  1.2546335234695254
 ```
 
 正常な音声と異常時の音声を複数何度か繰り返し、正常と異常を切り分けるスコア値をみつける。
+
+また、以下のように `--eval` のかわりに `--datadir` を指定した場合、指定ディレクトリ内の最新ファイルを対象とする。
+
+```bash
+python eval.py --datadir data --model models/anormaly.h5 --debug True
+```
+
+## 異常検知スコアグラフ表示
+
+```bash
+python server.py --host XXX.XXX.XXX.XXX --port 5000 --model models/anormaly.h5 --datadir data --debug True
+```
+
+実行後、`http://XXX.XXX.XXX.XXX:5000/` をブラウザで開くとグラフで確認できる。
 
 ## ライセンス
 
