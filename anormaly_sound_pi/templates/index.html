@@ -55,7 +55,7 @@
             <canvas id="myChart"></canvas>
         </div>
         <script>
-            drawChart();
+            //drawChart();
             setInterval( function(){
                 $.ajax({
                     url: '/update',
@@ -69,7 +69,7 @@
                             values = msg.values;
                             if(myChart) {
                                 myChart.destroy();
-                                clonsole.log('destoy chart')
+                                console.log('destoy chart')
                             };
                             drawChart();
                         };
