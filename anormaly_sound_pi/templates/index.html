@@ -45,13 +45,14 @@
                 $.ajax({
                     url: '/update',
                     type: 'GET',
-                    data: {},
-                    success: function( result ) {
-                        console.log(result);
-                        labels = result.labels;
-                        values = result.values;
-                    }
-            });
+                    data: {}
+                }).done( (msg) => {
+                        console.log(msg);
+                        //labels = msg.result.labels;
+                        //values = msg.result.values;
+                }).fail(msg => {
+                    console.log('[Fail] ' + msg);
+                }).always((msg) => {});
             }, 1000);
 
         </script>
