@@ -36,7 +36,7 @@
             <canvas id="myChart"></canvas>
         </div>
         <script>
-            const myChart = new Chart(
+            var myChart = new Chart(
                 document.getElementById('myChart'),
                 config
             );
@@ -47,8 +47,8 @@
                     data: {}
                 }).done( (msg) => {
                         console.log(msg);
-                        //labels = msg.result.labels;
-                        //values = msg.result.values;
+                        labels = msg.labels;
+                        values = msg.values;
                 }).fail(msg => {
                     console.log('[Fail] ' + msg);
                 }).always((msg) => {});
