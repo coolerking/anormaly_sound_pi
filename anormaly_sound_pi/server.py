@@ -66,15 +66,36 @@ port = args.port
 音声異常検知辞書の更新
 """
 result = {}
-files = get_all_path(path=datadir)
-for file in files:
+
+def _get_score(file:str) -> float:
+    """
+    音声異常データファイルパス先のファイルを読み込み、異常判定スコアを算出する。
+
+    Parameters:
+    --------
+    file: str
+        対象とする音声データファイル(wav形式)
+    
+    Returns
+    --------
+    detect_score: float
+        異常判定スコア
+    """
     # 評価対象音声ファイル読み込み
     (rate,sig) = wav.read(file)
     # 誤差計算
     detect_data = logfbank(sig,rate,winlen=0.01,nfilt=input_size)
     # 評価対象音声ファイルデータを使って異常かどうか予測
     detect_pred = model.predict(detect_data)
-    result[file] = detect_pred
+    # 異常判定スコア計算
+    return mean_squared_error(detect_data, detect_pred)
+
+# 初期読み込み
+files = get_all_path(path=datadir)
+for file in files:
+    # 異常判定スコア計算
+    detect_score = _get_score(file)
+    result[file] = detect_score
 
 # アプリケーションオブジェクト生成
 app = Flask(__name__)
@@ -99,14 +120,8 @@ def update():
     file = get_latest_path(path=datadir)
     if file is not None:
         if os.path.isfile(file):
-            # 評価対象音声ファイル読み込み
-            (rate,sig) = wav.read(file)
-            # 誤差計算
-            detect_data = logfbank(sig,rate,winlen=0.01,nfilt=input_size)
-            # 評価対象音声ファイルデータを使って異常かどうか予測
-            detect_pred = model.predict(detect_data)
             # 異常判定スコア計算
-            detect_score = mean_squared_error(detect_data, detect_pred)
+            detect_score = _get_score(file)
             result[file] = detect_score
             if debug:
                 print(f'update dict {str(result)}')
