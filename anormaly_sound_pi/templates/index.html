@@ -23,7 +23,17 @@
             var config = {
                 type: 'line',
                 data: data,
-                options: {}
+                options: {
+                    scalses: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 200,
+                                stepSize: 10
+                            }
+                        }]
+                    }
+                }
             };
 
             Array.prototype.equals = function (getArray) {
