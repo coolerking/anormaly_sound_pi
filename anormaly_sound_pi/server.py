@@ -8,6 +8,7 @@ import argparse
 from keras.models import load_model
 import scipy.io.wavfile as wav
 from python_speech_features import logfbank
+from sklearn.metrics import mean_squared_error
 from flask import Flask, jsonify, render_template, session
 
 from utils import DATA_PATH, get_latest_path, get_all_path
@@ -104,7 +105,9 @@ def update():
             detect_data = logfbank(sig,rate,winlen=0.01,nfilt=input_size)
             # 評価対象音声ファイルデータを使って異常かどうか予測
             detect_pred = model.predict(detect_data)
-            result[file] = detect_pred
+            # 異常判定スコア計算
+            detect_score = mean_squared_error(detect_data, detect_pred)
+            result[file] = detect_score
             if debug:
                 print(f'update dict {str(result)}')
         elif debug:
