@@ -64,6 +64,7 @@
                 }).done( (msg) => {
                         console.log(labels.equals(msg.labels));
                         if (labels.equals(msg.labels) == false) {
+                            console.log('unmatch labels');
                             labels = msg.labels;
                             values = msg.values;
                             if(myChart) {
