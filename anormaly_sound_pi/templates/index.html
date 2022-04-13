@@ -8,15 +8,15 @@
         <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-            var labels = [];
-            var values = [];
+            //var labels = [];
+            //var values = [];
             var data = {
-                labels: labels,
+                labels: [],
                 datasets: [{
                     label: 'Sound Anormaly Score',
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
-                    data: values,
+                    data: [],
                 }]
             };
           
@@ -37,13 +37,7 @@
                     }
                     return true;
             };
-            var myChart;
-            function drawChart(){
-                myChart = new Chart(
-                    document.getElementById('myChart'),
-                    config);
-                console.log("draw chart");
-            };
+
         </script>
         <link rel="shortcut icon" href="/static/images/favicon.ico">
     </head>
@@ -55,21 +49,27 @@
             <canvas id="myChart"></canvas>
         </div>
         <script>
-            //drawChart();
+            var myChart;
+            function drawChart(){
+                myChart = new Chart(
+                    document.getElementById('myChart'),
+                    config);
+                console.log("draw chart");
+            };
             setInterval( function(){
                 $.ajax({
                     url: '/update',
                     type: 'GET',
                     data: {}
                 }).done( (msg) => {
-                        console.log(labels.equals(msg.labels));
+                        console.log(config.data.labels.equals(msg.labels));
                         if (labels.equals(msg.labels) == false) {
                             console.log('unmatch labels');
-                            labels = msg.labels;
-                            values = msg.values;
+                            config.data.labels = msg.labels;
+                            config.data.datasets.data = msg.values;
                             if(myChart) {
                                 myChart.destroy();
-                                console.log('destoy chart')
+                                console.log('destoy chart');
                             };
                             drawChart();
                         };
