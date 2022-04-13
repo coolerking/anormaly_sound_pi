@@ -40,8 +40,9 @@
             var myChart;
             function drawChart(){
                 myChart = new Chart(
-                document.getElementById('myChart'),
-                config);
+                    document.getElementById('myChart'),
+                    config);
+                console.log("draw chart");
             };
         </script>
         <link rel="shortcut icon" href="/static/images/favicon.ico">
@@ -65,9 +66,12 @@
                         if (labels.equals(msg.labels) == false) {
                             labels = msg.labels;
                             values = msg.values;
+                            if(myChart) {
+                                myChart.destroy();
+                                clonsole.log('destoy chart')
+                            };
+                            drawChart();
                         };
-                        myChart.destroy();
-                        drawChart();
                 }).fail(msg => {
                     console.log('[Fail] ' + msg);
                 }).always((msg) => {});
