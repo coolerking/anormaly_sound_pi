@@ -107,7 +107,7 @@ app = Flask(__name__)
 # session 用シークレットキー
 app.secret_key='sound_anormaly_web_ui'
 
-@app.route('/update', methods=['GET'])
+@app.route('/update', methods=['POST'])
 def update():
     """
     音声異常検知辞書の更新。

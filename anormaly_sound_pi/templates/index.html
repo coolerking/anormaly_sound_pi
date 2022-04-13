@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- ボタンは https://saruwakakun.com/html-css/reference/css-sample より引用 -->
+<!-- Flaskから起動 -->
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
@@ -8,8 +8,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-            //var labels = [];
-            //var values = [];
+            // Chart.js 描画グラフデータ
             var data = {
                 labels: [],
                 datasets: [{
@@ -19,7 +18,7 @@
                     data: [],
                 }]
             };
-          
+            // Chart.js 描画グラフ設定
             var config = {
                 type: 'line',
                 data: data,
@@ -36,6 +35,7 @@
                 }
             };
 
+            // 配列をequalsで評価できるようにする
             Array.prototype.equals = function (getArray) {
                 if (this.length != getArray.length) return false;
                     for (var i = 0; i < getArray.length; i++) {
@@ -59,35 +59,38 @@
             <canvas id="myChart"></canvas>
         </div>
         <script>
+            // canvas 要素へChart.jsグラフ描画する関数
             var myChart;
             function drawChart(){
                 myChart = new Chart(
                     document.getElementById('myChart'),
                     config);
-                console.log("draw chart");
+                console.log("[drawChart] draw chart");
             };
+
+            // 等間隔でajax実行
             setInterval( function(){
                 $.ajax({
                     url: '/update',
-                    type: 'GET',
+                    type: 'POST',
                     data: {}
                 }).done( (msg) => {
-                        console.log(config.data.labels.equals(msg.labels));
+                        console.log('[done] labels: ' + config.data.labels.equals(msg.labels));
                         if (config.data.labels.equals(msg.labels) == false) {
-                            console.log('unmatch labels');
+                            console.log('[done] unmatch labels');
                             config.data.labels = msg.labels;
                             config.data.datasets[0].data = msg.values;
                             if(myChart) {
                                 myChart.destroy();
-                                console.log('destoy chart');
+                                console.log('[done] destoy chart');
                             };
                             drawChart();
-                            console.log(config.data.datasets[0].data);
+                            console.log('[done] redraw chart: ' + config.data.datasets[0].data);
                         };
                 }).fail(msg => {
-                    console.log('[Fail] ' + msg);
+                    console.log('[fail] ' + msg);
                 }).always((msg) => {});
-            }, 1000);
+            }, 5000); // 5000ミリ秒ごとに実行
 
         </script>
     </body>
