@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 実行モジュール: Web UIから音声評価結果を確認する。
+
+実行例:
+
+python server.py --host XXX.XXX.XXX.XXX --port 5000 --datadir data --model models/hogehoge.h5 --debug True
+
+実行後、ブラウザで http://XXX.XXX.XXX.XXX:5000/ を開く
 """
 import os
 import sys
@@ -45,7 +51,11 @@ if not os.path.isfile(args.model):
     if debug:
         print(f'model {args.model} not exist, stop.')
     sys.exit(-1)
+if debug:
+    print(f'loading model: {args.model}')
 model = load_model(args.model)
+if debug:
+    print('finish loading')
 
 """
 入力データのカラム数
@@ -99,6 +109,8 @@ files = get_all_path(path=datadir)
 for file in files:
     # 異常判定スコア計算
     detect_score = _get_score(file)
+    if debug:
+        print(f'predicted target: {file}, score: {str(detect_score)}')
     labels.append(file)
     values.append(detect_score)
 
@@ -131,14 +143,12 @@ def update():
                 labels.append(file)
                 values.append(detect_score)
                 if debug:
-                    print(f'append label: {file}, value: {str(detect_score)}')
-                    print(f'update dict {str(result)}')
+                    print(f'[update] append label: {file}, value: {str(detect_score)}')
+                    print(f'[update] update dict {str(result)}')
         elif debug:
-            print(f'latest file {file} not exists.')
-    else:
-        print('latest file is None.')
-    print(result)
-    print(type(result))
+            print(f'[update] latest file {file} not exists.')
+    elif debug:
+        print('[update] latest file is None.')
     return jsonify(result)
 
 @app.route('/clear', methods=['GET'])
@@ -159,7 +169,7 @@ def clear_result():
     labels = []
     values = []
     if debug:
-        print('clear dict')
+        print('[clear] clear dict')
     return jsonify(result)
 
 @app.route('/', methods=['GET'])
