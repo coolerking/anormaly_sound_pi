@@ -4,5 +4,5 @@
 export PATH=${PATH}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games:.
 source ${HOME}/env/bin/activate
 cd ${HOME}/projects/anormaly_sound_pi/anormaly_sound_pi
-/home/pi/env/bin/python record.py --datadir data --age 20 --sec 10 --dev_index 1 --debug True
+/home/pi/env/bin/python record.py --datadir data --age 5 --sec 10 --dev_index 1 --debug True
 exit $?
