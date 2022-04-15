@@ -2,6 +2,13 @@
 
 Raspberry Pi にUSBマイクを接続して、音声異常検知をおこなう。
 
+## 前提
+
+- Raspberry Pi4 8GBmem / ACアダプタ
+- Raspberry Pi OS bullseye 2022/04/04版
+- swap設定 2GB
+- Sound Blaster V3 & ピンマイク
+
 ## セットアップ
 
 > Windows 環境で試行する場合は https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio よりwhlファイルを取得し、pip installする
