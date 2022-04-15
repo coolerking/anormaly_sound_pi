@@ -54,7 +54,9 @@ def _get_date_format_path(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str
         suffix = '.log'
     elif suffix.find('.') == -1:
         suffix = '.' + suffix
-    
+    print(path)
+    print(prefix)
+    print(suffix)
     path += prefix + datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + suffix
     return path
 
