@@ -107,6 +107,22 @@ python eval.py --datadir data --model models/anormaly.h5 --debug True
 
 ## 異常検知スコアグラフ表示
 
+以下を実行する。
+
+```bash
+cd ${HOME}/projects/anormaly_sound_pi/anormaly_sound_pi
+chmod +x record.sh
+crontab -e
+```
+
+crontabを以下のように編集する。
+
+```shell
+0-59 * * * * /home/pi/projects/anormaly_sound_pi/anormaly_sound_pi/record.sh
+```
+
+data ディレクトリに履歴が溜まってきたら、以下のコマンドを実行する。
+
 ```bash
 python server.py --host XXX.XXX.XXX.XXX --port 5000 --model models/anormaly.h5 --datadir data --debug True
 ```
