@@ -74,7 +74,7 @@ def callback(in_data, frame_count, time_info, status):
     # wavfile へ書き込み
     if debug:
         print(type(in_data))
-    wavefile.writeframes(b''.join(in_data))
+    wavefile.writeframes(in_data)
 
     return (in_data, pyaudio.paContinue)
 
