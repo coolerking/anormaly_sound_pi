@@ -70,7 +70,7 @@ Raspberry Pi に接続したマイクを対象に向ける。
 ```bash
 cd ~/projects/anormaly_sound_pi/anormaly_sound_pi
 mkdir data
-python record.py --sec 10 --datadir data --device_index 1 --debug True --age 5
+python record.py --sec 10 --datadir data --dev_index 1 --debug True --age 5
 ```
 
 上記の例では、10秒間収集した音声データファイル(wav形式)をdataディレクトリに保存する。
