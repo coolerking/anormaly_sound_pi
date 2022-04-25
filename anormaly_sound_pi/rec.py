@@ -72,9 +72,10 @@ wavefile.setframerate(sampling_rate)
 
 def callback(in_data, frame_count, time_info, status):
     # wavfile へ書き込み
-    wavefile.writeframes(b''.join(in_data))
     if debug:
         print(type(in_data))
+    wavefile.writeframes(b''.join(in_data))
+
     return (in_data, pyaudio.paContinue)
 
 # 引数情報に従って、PyAudio ストリーム生成
