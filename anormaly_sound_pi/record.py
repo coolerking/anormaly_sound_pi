@@ -11,7 +11,7 @@ from utils import DATA_PATH, DATA_AGE, data_rotate
 parser = argparse.ArgumentParser(description='record to wav format file')
 parser.add_argument('--sec', type=int, default=3, help='recording time(sec)')
 parser.add_argument('--chunk', type=int, default=4096, help='data size')
-parser.add_argument('--channels', type=int, default=1, help='channel')
+parser.add_argument('--channels', type=int, default=1, help='channel mono:1 stereo:2')
 parser.add_argument('--sampling_rate', type=int, default=44100, help='sampling rate(kHz)')
 parser.add_argument('--datadir', type=str, default=DATA_PATH, help='data directory path')
 parser.add_argument('--age', type=int, default=DATA_AGE, help='remained latest data file count')
