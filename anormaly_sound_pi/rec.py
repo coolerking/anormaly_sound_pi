@@ -97,12 +97,15 @@ wavefile.close()
 if debug:
     print(f'wait {record_secs} secs.')
 
+print('stop_stream()')
 stream.stop_stream()
+print('close()')
 stream.close()
-audio.close()
+print('terminate()')
+audio.terminate()
 if debug:
     print("stopped recording")
-time.sleep(0.1)
+time.sleep(5)
 wavefile.close()
 
 if debug:
