@@ -10,7 +10,8 @@ from utils import DATA_PATH, DATA_AGE, data_rotate
 # 引数定義およびパース
 parser = argparse.ArgumentParser(description='record to wav format file')
 parser.add_argument('--sec', type=int, default=3, help='recording time(sec)')
-parser.add_argument('--chunk', type=int, default=4096, help='data size')
+parser.add_argument('--chunk', type=int, default=4096, help='data size/frame')
+parser.add_argument('--bit_depth', type=int, default=pyaudio.paInt16, help='bit depth')
 parser.add_argument('--channels', type=int, default=1, help='channel mono:1 stereo:2')
 parser.add_argument('--sampling_rate', type=int, default=44100, help='sampling rate(kHz)')
 parser.add_argument('--datadir', type=str, default=DATA_PATH, help='data directory path')
@@ -27,10 +28,10 @@ debug = args.debug
 """
 初期値：ビット解像度(bit)
 """
-format = pyaudio.paInt16
+format = args.bit_depth
 
 """
-初期値: チャネル
+初期値: チャネル(1:mono, 2:stereo)
 """
 channels = args.channels
 
@@ -83,11 +84,15 @@ wavefile.setsampwidth(audio.get_sample_size(format))
 wavefile.setframerate(sampling_rate)
 
 # 指定秒数の音声をchunkサイズごとに取得し、配列framesへ追加
-for _ in range(0, int((sampling_rate / chunk) * record_secs)):
-    frames = []
+max_count = int((sampling_rate / chunk) * record_secs)
+for i in range(0, max_count):
     # IOError対策 exception_on_overflow=False
-    frames.append(stream.read(chunk, exception_on_overflow=False))
-    wavefile.writeframes(b''.join(frames))
+    wavefile.writeframes(
+        b''.join(
+            stream.read(
+                chunk, exception_on_overflow=False)))
+    if (i+1) % max_count == 0 and debug:
+        print(f'wrote {i}/{max_count} frame(s).')
 if debug:
     print("finished recording")
 
@@ -99,4 +104,4 @@ audio.terminate()
 
 wavefile.close()
 if debug:
-    print('wrote to {}'.format(wav_filename))
+    print(f'wrote to {wav_filename}')
