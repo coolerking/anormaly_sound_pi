@@ -35,7 +35,7 @@ def  test_mic():
     stream.start_stream()
     for i in range(0, int((args.sampling_rate / args.chunk) * args.sec)):
         frames = []
-        frames.append(stream.read(args.chunk))
+        frames.append(stream.read(args.chunk, exception_on_overflow=False))
         f = b''.join(frames)
         #print(f)
         print(i)
