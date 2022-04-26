@@ -90,7 +90,7 @@ for i in range(0, max_count):
     # IOError対策 exception_on_overflow=False
     frames.append(stream.read(chunk, exception_on_overflow=False))
     wavefile.writeframes(b''.join(frames))
-    if i != 0 and (i+1) % 10 == 0 and debug:
+    if i != 0 and i % 10 == 0 and debug:
         print(f'wrote {i}/{max_count} frame(s).')
 if debug:
     print("finished recording")
