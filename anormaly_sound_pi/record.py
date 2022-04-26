@@ -75,7 +75,6 @@ stream = audio.open(
     frames_per_buffer=chunk)
 if debug:
     print("recording")
-#frames = []
 
 # 配列frames データをwavファイルにして保存
 wavefile = wave.open(wav_filename,'wb')
@@ -86,7 +85,8 @@ wavefile.setframerate(sampling_rate)
 # 指定秒数の音声をchunkサイズごとに取得し、配列framesへ追加
 for _ in range(0, int((sampling_rate / chunk) * record_secs)):
     frames = []
-    frames.append(stream.read(chunk))
+    # IOError対策 exception_on_overflow=False
+    frames.append(stream.read(chunk, exception_on_overflow=False))
     wavefile.writeframes(b''.join(frames))
 if debug:
     print("finished recording")
