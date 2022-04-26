@@ -86,11 +86,10 @@ wavefile.setframerate(sampling_rate)
 # 指定秒数の音声をchunkサイズごとに取得し、配列framesへ追加
 max_count = int((sampling_rate / chunk) * record_secs)
 for i in range(0, max_count):
+    frames = []
     # IOError対策 exception_on_overflow=False
-    wavefile.writeframes(
-        b''.join(
-            stream.read(
-                chunk, exception_on_overflow=False)))
+    frames.append(stream.read(chunk, exception_on_overflow=False))
+    wavefile.writeframes(b''.join(frames))
     if (i+1) % max_count == 0 and debug:
         print(f'wrote {i}/{max_count} frame(s).')
 if debug:
