@@ -26,6 +26,7 @@ parser.add_argument('--datadir', type=str, default=DATA_PATH, help='data directo
 parser.add_argument('--eval_path', type=str, default=None, help='eval target wav filename')
 parser.add_argument('--model', type=str, default='model\model.h5', help='trained model filename')
 parser.add_argument('--input_size', type=int, default=20, help='input data size')
+parser.add_argument('--ignore_rows', type=int, default=10, help='ignore data rows')
 parser.add_argument('--debug', type=bool, default=False, help='print debug lines')
 #parser.add_argument('--dev_index', type=int, default=1, help='USB mic index no')
 args = parser.parse_args()
@@ -49,6 +50,11 @@ model_path = args.model
 評価対象音声ファイルパス
 """
 eval_path = args.eval_path
+
+"""
+先頭削除行数
+"""
+ignore_rows = args.ignore_rows
 
 # 引数表示
 if debug:
@@ -85,6 +91,13 @@ model = load_model(model_path)
 
 # 誤差計算
 detect_data = logfbank(sig,rate,winlen=0.01,nfilt=input_size)
+if debug:
+    print(f'target data original shape: {detect_data.shape}')
+
+# 先頭10削除
+detect_data = detect_data[ignore_rows:]
+if debug:
+    print(f'target data reshaped: {detect_data.shape}')
 
 # 評価対象音声ファイルデータを使って異常かどうか予測
 detect_pred = model.predict(detect_data)
