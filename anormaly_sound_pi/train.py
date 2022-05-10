@@ -7,9 +7,11 @@ import os
 import time
 from keras.layers import Dense, BatchNormalization, Activation
 from keras.models import Sequential
+from keras.callbacks import EarlyStopping, TensorBoard
 import scipy.io.wavfile as wav
 from python_speech_features import logfbank
 import argparse
+from utils import get_log_path
 
 # 引数管理
 parser = argparse.ArgumentParser(description='train AutoEncoder with wav format file')
@@ -17,11 +19,11 @@ parser.add_argument('--train', type=str, default='train.wav', help='train data f
 parser.add_argument('--model', type=str, default='./ae_audio_model.h5', help='trained model filename')
 parser.add_argument('--ignore_rows', type=int, default=10, help='ignore data rows')
 parser.add_argument('--input_size', type=int, default=20, help='input data size')
+parser.add_argument('--epochs', type=int, default=2000, help='epochs')
+parser.add_argument('--early_stopping', type=bool, default=False, help='use early stopping')
+parser.add_argument('--tensor_board', type=bool, default=False, help='use TensorBoard')
 parser.add_argument('--debug', type=bool, default=False, help='print debug lines')
 args = parser.parse_args()
-if debug:
-    print(args)
-
 
 """
 入力データの項目数
@@ -47,6 +49,24 @@ ignore_rows = args.ignore_rows
 デバッグフラグ
 """
 debug = args.debug
+
+"""
+epochs
+"""
+epochs = args.epochs
+
+"""
+early stopping
+"""
+early_stopping = args.early_stopping
+
+"""
+Tensor Board
+"""
+tensor_board = args.tensor_board
+
+if debug:
+    print(args)
 
 # トレーニングデータ読み込み
 if not os.path.exists(data_path):
@@ -79,15 +99,28 @@ model.add(Dense(input_size))
 model.compile(optimizer='adam', loss='mean_squared_error')
 model.summary()
 
+
+# コールバック関数
+callbacks = []
+if early_stopping:
+    callbacks.append(
+        EarlyStopping(monitor='val_loss', min_delta=0, patience=3, verbose=0, mode='auto')
+    )
+if tensor_board:
+    callbacks.append(
+        TensorBoard(log_dir=get_log_path(), histogram_freq=0, batch_size=32, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
+    )
+
 # 学習：入力データと結果データを同一にする
 elapsed = time.perf_counter()
 history = model.fit(
     x=train_data, # 学習データ(入力) 
     y=train_data, # 学習データ(出力)、入力と同じ
-    epochs=100, 
+    epochs=epochs, 
     batch_size=4, 
-    validation_split=0.1)
-elapsed -= time.perf_counter()
+    validation_split=0.1,
+    callbacks = callbacks)
+elapsed = time.perf_counter() - elapsed
 if debug:
     print(f'training elapse time {elapsed}')
 

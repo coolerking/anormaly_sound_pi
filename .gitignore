@@ -131,3 +131,4 @@ dmypy.json
 # ignore wav/h5
 *.h5
 *.wav
+epochs*

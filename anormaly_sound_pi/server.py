@@ -81,6 +81,7 @@ result = {
     'labels': labels,
     'values': values,
 }
+MAX_SIZE = 500
 def _get_score(file:str) -> float:
     """
     音声異常データファイルパス先のファイルを読み込み、異常判定スコアを算出する。
@@ -142,6 +143,11 @@ def update():
             if file not in labels:
                 labels.append(file)
                 values.append(detect_score)
+                while len(labels) > MAX_SIZE:
+                    removed_label = labels.pop(0)
+                    removed_value = values.pop(0)
+                    if debug:
+                        print(f'[update] removed label:{removed_label} value:{removed_value}')
                 if debug:
                     print(f'[update] append label: {file}, value: {str(detect_score)}')
                     print(f'[update] update dict {str(result)}')

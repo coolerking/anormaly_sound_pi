@@ -213,6 +213,18 @@ def get_all_path(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUF
     """
     return _get_files(path=path, prefix=prefix, suffix=suffix)
 
+def get_log_path() -> str:
+    """
+    ログディレクトリ先文字列を作成する。
+
+    Returns
+    --------
+    logdir: str
+        ログディレクトリ先文字列
+    """
+    return './logs_' + datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+
+
 #if __name__ == '__main__':
     #print(_get_date_format_path())
     #print(_get_date_format_path(path='hehehe', prefix='fufufu_', suffix='www'))
