@@ -1,13 +1,21 @@
-# anormaly_sound_pi
+# Sound Anormaly Detection with Raspberry Pi
 
-Raspberry Pi にUSBマイクを接続して、音声異常検知をおこなう。
+Raspberry Pi にUSBマイクを接続して、電動バギーが接近していることを検知する。
+
+[![Sound Anormaly Detection](http://img.youtube.com/vi/C-q4WTERQNY/0.jpg)](https://www.youtube.com/watch?v=C-q4WTERQNY)
 
 ## 前提
+
+### 音声検知側
 
 - Raspberry Pi4 8GBmem / ACアダプタ
 - Raspberry Pi OS bullseye 2022/04/04版
 - swap設定 2GB
-- Sound Blaster V3 & ピンマイク
+- SunFounder 超小型 USBミニマイク (もしくは、Sound Blaster V3 & ピンマイク)
+
+### 音声発生源側
+
+- タミヤ楽しい工作シリーズ No.112 電動バギー (ローギア)
 
 ## セットアップ
 
@@ -127,6 +135,14 @@ crontabを以下のように編集する。
 ```shell
 0-59 * * * * /home/pi/projects/anormaly_sound_pi/anormaly_sound_pi/record.sh
 ```
+
+> もっとはやく検知情報をグラフへ反映させたい場合は、
+>
+> ```shell
+> watch -n 2 /home/pi/projects/anormaly_sound_pi/anormaly_sound_pi/record.sh 1> /dev/null 2>&1
+> ```
+>
+> などで実行させる（上記記述ではバックグラウンド実行とはならない）。
 
 data ディレクトリに履歴が溜まってきたら、以下のコマンドを実行する。
 
