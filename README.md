@@ -36,8 +36,10 @@ pip install keras_preprocessing==1.1.0 --no-deps
 pip install numpy==1.22.1 -U
 pip install h5py==3.6.0
 pip install pybind11
+pip install python_speech_features
 pip install six wheel mock -U
 pip install sklearn
+
 pip install flask
 mkdir ~/projects
 cd ~/projects
