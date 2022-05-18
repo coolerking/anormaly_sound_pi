@@ -4,7 +4,7 @@
 
 実行例:
 
-python server.py --host XXX.XXX.XXX.XXX --port 5000 --datadir data --model models/hogehoge.h5 --debug True
+python server.py --host XXX.XXX.XXX.XXX --port 5000 --datadir data --model models/hogehoge.h5 --low 12.0 --high 20.5 --debug True
 
 実行後、ブラウザで http://XXX.XXX.XXX.XXX:5000/ を開く
 """
@@ -24,6 +24,8 @@ parser = argparse.ArgumentParser(description='sound anormaly detection web ui se
 parser.add_argument('--datadir', type=str, default=DATA_PATH, help='data directory path')
 parser.add_argument('--model', type=str, default='model\model.h5', help='trained model filename')
 parser.add_argument('--input_size', type=int, default=20, help='input data size')
+parser.add_argument('--low', type=float, default=1.0, help='normal/anormal threshold(low)')
+parser.add_argument('--high', type=float, default=100.0, help='anormal/error threshold(high)')
 parser.add_argument('--port', type=int, default=5000, help='listen port')
 parser.add_argument('--debug', type=bool, default=False, help='print debug lines')
 parser.add_argument('--host', type=str, default='127.0.0.1', help='web server host address')
@@ -47,6 +49,10 @@ datadir = args.datadir
 """
 モデル
 """
+# normal < low_threshold <= anormal
+low_threshold = args.low
+# anormal < high_threshold <= error
+high_threshold = args.high
 if not os.path.isfile(args.model):
     if debug:
         print(f'model {args.model} not exist, stop.')
@@ -80,6 +86,8 @@ values = []
 result = {
     'labels': labels,
     'values': values,
+    'low_threshold': low_threshold,
+    'high_threshold': high_threshold,
 }
 MAX_SIZE = 500
 def _get_score(file:str) -> float:
@@ -195,10 +203,28 @@ def show_index():
     if 'result' not in session:
         # 観測初期化
         session['result'] = result
-        #session['labels'] = labels
-        #session['values'] = values
     # /template/index.html を表示
     return render_template('index.html')
+
+@app.route('/gear', methods=['GET'])
+def show_gear():
+    """
+    gear.html を表示する。
+
+    Parameters
+    --------
+    None
+
+    Returns
+    --------
+    None
+    """
+    # セッション上に初期化した観測データを格納
+    if 'result' not in session:
+        # 観測初期化
+        session['result'] = result
+    # /template/gear.html を表示
+    return render_template('gear.html')
 
 if __name__ == '__main__':
     """

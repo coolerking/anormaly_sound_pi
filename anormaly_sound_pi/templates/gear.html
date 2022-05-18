@@ -1,0 +1,111 @@
+<!doctype html>
+<!-- jQuery/Chart.jsを使用 -->
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sound Anormaly Detection</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gauge.js/1.3.7/gauge.min.js" integrity="sha512-J0d1VfdfTSDoDPEsahCtf2nC+groXdWkuQFyJjS+s3CpKj63X9Hf3pMEJtjIJt/ODh0QwTRx2/OioL+9fMoqSA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+        
+        <script>
+            var opts = {
+                angle: 0.15, // 弧の角度
+                lineWidth: 0.44, // 先の太さ
+                radiusScale: 1, // 弧の相対半径
+                pointer: {
+                    length: 0.6, // ゲージ半径に対する相対値
+                    strokeWidth: 0.035, // The thickness
+                    color: '#000000' // Fill color
+                },
+                limitMax: false,     // If false, max value increases automatically if value > maxValue
+                limitMin: false,     // If true, the min value of the gauge will be fixed
+                colorStart: '#6FADCF',   // Colors
+                colorStop: '#8FC0DA',    // just experiment with them
+                strokeColor: '#E0E0E0',  // to see which ones work best for you
+                generateGradient: true,
+                highDpiSupport: true,     // High resolution support
+            };
+
+
+            // 配列をequalsで評価できるようにする
+            Array.prototype.equals = function (getArray) {
+                if (this.length != getArray.length) return false;
+                    for (var i = 0; i < getArray.length; i++) {
+                        if (this[i] instanceof Array && getArray[i] instanceof Array) {
+                            if (!this[i].equals(getArray[i])) return false;
+                        } else if (this[i] != getArray[i]) {
+                            return false;
+                        }
+                    }
+                    return true;
+            };
+
+        </script>
+        <link rel="shortcut icon" href="/static/images/favicon.ico">
+    </head>
+    <body>
+        <center>
+            <h1>Gear Shift Detection</h1>
+        </center>
+        <div>
+            <center><div id="myValue"></div></center>
+            <center><canvas id="myChart"></canvas></center>
+            <center><img id="result" src="/static/images/yellow.png" height="50px"></center>
+        </div>
+        <script>
+            var target;
+            var gauge;
+            var label = '';
+            drawChart = (value, color) => {
+                opts.colorStop = color;
+                target = document.getElementById('myChart'); // your canvas element
+                gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+                gauge.maxValue = 100; // set max gauge value
+                gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+                gauge.animationSpeed = 33; // set animation speed (32 is default value)
+                gauge.set(value); // set actual value
+                console.log('[drawChart] value: ' + value + ', color: ' + color);
+            };
+
+            // 等間隔でajax実行
+            setInterval( function(){
+                $.ajax({
+                    url: '/update',
+                    type: 'POST',
+                    data: {}
+                }).done( (msg) => {
+                        if (label == msg.labels.slice(-1)[0]) {
+                            console.log('[done] same label: ' + label);
+                        } else {
+                            value = msg.values.slice(-1)[0];
+                            low_threshold = msg.low_threshold;
+                            high_threshold = msg.high_threshold;
+                            console.log('[done] new label: ' + msg.labels.slice(-1)[0] + ',value: ' + value + ', low: ' + low_threshold + ', high: ' + high_threshold);
+                            if (value <= low_threshold) {
+                                color = '#021FDA';
+                                $('#result').attr('src', '/static/images/green.png');
+                                status = 'low gear: ';
+                            } else if (value <= high_threshold) {
+                                color = '#DA0E07';
+                                $('#result').attr('src', '/static/images/red.png');
+                                status = 'high gear: ';
+                            } else {
+                                color = '#DAD307';
+                                $('#result').attr('src', '/static/images/yellow.png');
+                                status = 'gear unknown: ';
+                            }
+                            $('#myValue').text(status + value);
+                            drawChart(value, color);
+                            label = msg.labels.slice(-1)[0];
+                        };
+
+                        
+                }).fail(msg => {
+                    console.log('[fail] msg: ' + msg);
+                }).always((msg) => {});
+            }, 2000); // 2000ミリ秒ごとに実行
+
+        </script>
+    </body>
+</html>
