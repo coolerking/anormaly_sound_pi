@@ -19,7 +19,7 @@ Raspberry Pi にUSBマイクを接続して、電動バギーが接近してい�
 
 ## セットアップ
 
-> Windows 環境で試行する場合は https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio よりwhlファイルを取得し、pip installする
+> Windows 環境で試行する場合は https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio よりwhlファイルを取得し、pip installする。
 
 ```shell
 sudo apt-get install build-essential python3 python3-dev python3-pip python3-virtualenv python3-numpy python3-pandas python3-pillow
@@ -43,14 +43,16 @@ pip install sklearn
 pip install flask
 mkdir ~/projects
 cd ~/projects
-wget "https://raw.githubusercontent.com/PINTO0309/Tensorflow-bin/main/tensorflow-2.8.0-cp39-none-linux_aarch64_numpy1221_download.sh"
-chmod +x tensorflow-2.8.0-cp39-none-linux_aarch64_numpy1221_download.sh
-./tensorflow-2.8.0-cp39-none-linux_aarch64_numpy1221_download.sh
+wget "https://raw.githubusercontent.com/PINTO0309/Tensorflow-bin/main/previous_versions/download_tensorflow-2.8.0-cp39-none-linux_aarch64_numpy1221.sh"
+chmod +x ./download_tensorflow-2.8.0-cp39-none-linux_aarch64_numpy1221.sh
+./download_tensorflow-2.8.0-cp39-none-linux_aarch64_numpy1221.sh
 pip install tensorflow-2.8.0-cp39-none-linux_aarch64.whl
 git clone https://github.com/coolerking/anormaly_sound_pi.git
 cd anormaly_sound_pi
 git checkout main
 ```
+
+> TensorFlow パッケージのダウンロード元リポジトリの環境整備により、上記パスが変更されることがある。
 
 ## マイクUSBデバイス番号確認
 
