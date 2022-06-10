@@ -27,6 +27,7 @@ parser.add_argument('--input_size', type=int, default=20, help='input data size'
 parser.add_argument('--low', type=float, default=1.0, help='normal/anormal threshold(low)')
 parser.add_argument('--high', type=float, default=100.0, help='anormal/error threshold(high)')
 parser.add_argument('--port', type=int, default=5000, help='listen port')
+parser.add_argument('--graph_size', type=int, default=500, help='graph element size')
 parser.add_argument('--debug', type=bool, default=False, help='print debug lines')
 parser.add_argument('--host', type=str, default='127.0.0.1', help='web server host address')
 args = parser.parse_args()
@@ -79,6 +80,11 @@ host = args.host
 port = args.port
 
 """
+グラフに表示する最大項目数
+"""
+graph_size = args.graph_size
+
+"""
 音声異常検知辞書の更新
 """
 labels = []
@@ -89,7 +95,7 @@ result = {
     'low_threshold': low_threshold,
     'high_threshold': high_threshold,
 }
-MAX_SIZE = 500
+
 def _get_score(file:str) -> float:
     """
     音声異常データファイルパス先のファイルを読み込み、異常判定スコアを算出する。
@@ -151,7 +157,7 @@ def update():
             if file not in labels:
                 labels.append(file)
                 values.append(detect_score)
-                while len(labels) > MAX_SIZE:
+                while len(labels) > graph_size:
                     removed_label = labels.pop(0)
                     removed_value = values.pop(0)
                     if debug:

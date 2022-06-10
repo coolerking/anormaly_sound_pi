@@ -4,9 +4,10 @@
 実行例: python train.py --train data\train.wav --model model\model.h5 --input_size 20
 """
 import os
+import sys
 import time
 from keras.layers import Dense, BatchNormalization, Activation
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.callbacks import EarlyStopping, TensorBoard
 import scipy.io.wavfile as wav
 from python_speech_features import logfbank
@@ -16,6 +17,7 @@ from utils import get_log_path
 # 引数管理
 parser = argparse.ArgumentParser(description='train AutoEncoder with wav format file')
 parser.add_argument('--train', type=str, default='train.wav', help='train data filename(wav format)')
+parser.add_argument('--base', type=str, help='base trained model filename(option)')
 parser.add_argument('--model', type=str, default='./ae_audio_model.h5', help='trained model filename')
 parser.add_argument('--ignore_rows', type=int, default=10, help='ignore data rows')
 parser.add_argument('--input_size', type=int, default=20, help='input data size')
@@ -84,20 +86,32 @@ train_data = train_data[ignore_rows:]
 if debug:
     print(f'train data reshaped: {train_data.shape}')
 
-# AutoEncoderモデルの組み立て
-model = Sequential()
-model.add(Dense(input_size,input_shape=(input_size,)))
-model.add(BatchNormalization())
-model.add(Activation('relu'))
-model.add(Dense(int(input_size/2)))
-model.add(BatchNormalization())
-model.add(Activation('relu'))
-model.add(Dense(input_size))
-model.add(BatchNormalization())
-model.add(Activation('relu'))
-model.add(Dense(input_size))
-model.compile(optimizer='adam', loss='mean_squared_error')
-model.summary()
+#
+if args.base:
+    if not os.path.isfile(args.base):
+        if debug:
+            print(f'base model {args.base} not exist, stop.')
+        sys.exit(-1)
+    if debug:
+        print(f'loading base model: {args.base}')
+    model = load_model(args.base)
+else:
+    # AutoEncoderモデルの組み立て
+    if debug:
+        print(f'create new model')
+    model = Sequential()
+    model.add(Dense(input_size,input_shape=(input_size,)))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dense(int(input_size/2)))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dense(input_size))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dense(input_size))
+    model.compile(optimizer='adam', loss='mean_squared_error')
+    model.summary()
 
 
 # コールバック関数
