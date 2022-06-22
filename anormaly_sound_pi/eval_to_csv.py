@@ -19,7 +19,7 @@ from utils import DATA_PATH, get_all_path
 now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
 
 
-parser = argparse.ArgumentParser(description='sound anormaly detection web ui server')
+parser = argparse.ArgumentParser(description='evaluate anormaly scores and write to csv file')
 parser.add_argument('--datadir', type=str, default=DATA_PATH, help='data directory path')
 parser.add_argument('--model', type=str, default=os.path.join('model','model.h5'), help='trained model filename')
 parser.add_argument('--output', type=str, default='eval_' + now.strftime("%Y%m%d%H%M%S") + '.csv', help='output csv filename')
