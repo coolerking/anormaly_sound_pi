@@ -137,4 +137,8 @@ gear
 heat
 agents
 stack*
+samples/
 2022*
+*_input.png
+*_output*.png
+*_wave.png

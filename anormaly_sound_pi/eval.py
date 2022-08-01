@@ -11,6 +11,7 @@ echo $?
 
 import os
 import sys
+import datetime
 from keras.models import load_model
 import scipy.io.wavfile as wav
 from python_speech_features import logfbank
@@ -27,6 +28,7 @@ parser.add_argument('--eval_path', type=str, default=None, help='eval target wav
 parser.add_argument('--model', type=str, default='model\model.h5', help='trained model filename')
 parser.add_argument('--input_size', type=int, default=20, help='input data size')
 parser.add_argument('--ignore_rows', type=int, default=10, help='ignore data rows')
+parser.add_argument('--visible', type=bool, default=False, help='output spectgram images')
 parser.add_argument('--debug', type=bool, default=False, help='print debug lines')
 #parser.add_argument('--dev_index', type=int, default=1, help='USB mic index no')
 args = parser.parse_args()
@@ -106,4 +108,14 @@ detect_pred = model.predict(detect_data)
 detect_score = mean_squared_error(detect_data, detect_pred)
 if debug:
     print(f'Score: {str(detect_score)}')
+
+# 可視化が真の場合、スペクトラム出力
+if args.visible:
+    import datetime
+    from utils import save_spectgram
+    timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    save_spectgram(sig.flatten(), 44100, timestamp + '_wave.png')
+    save_spectgram(detect_data.flatten(), 44100, timestamp + '_input.png')
+    save_spectgram(detect_pred.flatten(), 44100, f'{timestamp}_output_{format(detect_score,".4f")}.png')
+# 終了
 sys.exit(detect_score)

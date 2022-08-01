@@ -12,6 +12,8 @@ import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt
 
+from utils import show_spectgram, save_spectgram
+
 # コマンドライン引数
 parser = argparse.ArgumentParser(description='output spectgram from a wave file')
 parser.add_argument('--wave', type=str, help='target wave filename(wav format)')
@@ -45,32 +47,13 @@ if args.debug:
 # waveファイルのクローズ
 wavefile.close()
 
-# セグメント長
-N=1024
-
-# scikit-learnのスペクトラム関数を使用
-freqs, times, Sx = signal.spectrogram(
-    y,                  # 測定値の時系列データ
-    fs=framerate,       # サンプリング頻度←waveフレームレート
-    window='hamming',   # 窓関数:ハミング窓を使用
-    nperseg=N,          # セグメント長
-    noverlap=N-100,     # セグメント間でオーバラップするサイズ
-    detrend=False,      # トレンド除去しない
-    scaling='spectrum') # スペクトログラム変数：V**2パワースペクトルを計算
-
-# グラフ描画
-f, ax = plt.subplots()
-ax.pcolormesh(times, freqs/1000, 10* np.log10(Sx), cmap='viridis')
-ax.set_ylabel('Frequency[kHz]')
-ax.set_xlabel('Time[s]')
-
 if not args.out:
     # GUI表示
     if args.debug:
         print('drawing graph image')
-    plt.show()
+    show_spectgram(y, framerate)
 else:
     # イメージをファイル出力
-    plt.savefig(args.out)
+    save_spectgram(y, framerate, args.out)
     if args.debug:
         print(f'output graph image:{args.out}')

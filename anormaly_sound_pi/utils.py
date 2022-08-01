@@ -5,6 +5,9 @@
 import os
 import glob
 import datetime
+import numpy as np
+from scipy import signal
+import matplotlib.pyplot as plt
 
 """
 定数: デフォルトデータディレクトリ名
@@ -54,9 +57,6 @@ def _get_date_format_path(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str
         suffix = '.log'
     elif suffix.find('.') == -1:
         suffix = '.' + suffix
-    print(path)
-    print(prefix)
-    print(suffix)
     path += prefix + datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + suffix
     return path
 
@@ -85,9 +85,7 @@ def _get_files(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFFI
         path += os.sep
         os.makedirs(path, exist_ok=True)
         path += '*'
-    #print(path)
     files = glob.glob(path)
-    #print(files)
     if len(files) == 0 or ((prefix is None or prefix == '') and (suffix is None or suffix == '')):
         for file in files:
             matched_files.append(_get_path(path, file))
@@ -101,16 +99,10 @@ def _get_files(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFFI
         if prefix_matched == False:
             continue
         suffix_matched = False
-        #print(prefix_matched)
-        #print(file)
-        #print(suffix)
-        #print(file.rfind(suffix))
-        #print(len(file) - len(suffix))
         if suffix is not None and len(suffix) != 0 and file.rfind(suffix) == len(file) - len(suffix):
             suffix_matched = True
         elif suffix is None or len(suffix) == 0:
             suffix_matched = True
-        #print(suffix_matched)
         if prefix_matched and suffix_matched:
             matched_files.append(file)
     return sorted(matched_files)
@@ -159,12 +151,6 @@ def data_rotate(path:str=DATA_PATH, prefix:str=DATA_PREFIX, suffix:str=DATA_SUFF
         次に作成すべきファイルパス
     """
     remove_files = _get_files(path=path, prefix=prefix, suffix=suffix)[:(-1 * (age-1))]
-    #print(path)
-    #print(prefix)
-    #print(suffix)
-    #print(_get_files(path=path, prefix=prefix, suffix=suffix))
-    #print(remove_files)
-    #print(age)
     for remove_file in remove_files:
         os.remove(remove_file)
     return _get_date_format_path(path=path, prefix=prefix, suffix=suffix)
@@ -224,6 +210,68 @@ def get_log_path() -> str:
     """
     return './logs_' + datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 
+def save_spectgram(y:any, framerate:int=44100, path:str=None) ->None:
+    """
+    周波数スペクトラム(縦軸:kHz、横軸:sec)イメージ(PNG形式)ファイルを生成する。
+
+    y:any           測定値の時系列データ
+    framerate:int   フレームレート
+    path:str        PNG形式イメージファイルパス
+    """
+
+    # セグメント長
+    N = 1024
+    # scikit-learnのスペクトラム関数を使用
+    freqs, times, Sx = signal.spectrogram(
+        y,                  # 測定値の時系列データ
+        fs=framerate,       # サンプリング頻度←waveフレームレート
+        window='hamming',   # 窓関数:ハミング窓を使用
+        nperseg=N,          # セグメント長
+        noverlap=N-100,     # セグメント間でオーバラップするサイズ
+        detrend=False,      # トレンド除去しない
+        scaling='spectrum') # スペクトログラム変数：V**2パワースペクトルを計算
+
+    # グラフ描画
+    f, ax = plt.subplots()
+    # X軸:times(秒) Y軸:freqs/1000(kHz) C軸(色): Sxの対数×10 
+    ax.pcolormesh(times, freqs/1000, 10* np.log10(Sx), cmap='viridis')
+    ax.set_ylabel('Frequency[kHz]')
+    ax.set_xlabel('Time[s]')
+    if path is None:
+        path = 'spectgram_' + datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + '.png'
+    plt.savefig(path)
+
+def show_spectgram(y:any, framerate:int=44100) ->None:
+    """
+    周波数スペクトラム(縦軸:kHz、横軸:sec)イメージ(PNG形式)ファイルを表示する。
+
+    Parameters
+    -----
+    y:any           測定値の時系列データ
+    framerate:int   フレームレート
+    """
+
+    # セグメント長
+    N = 1024
+    # scikit-learnのスペクトラム関数を使用
+    freqs, times, Sx = signal.spectrogram(
+        y,                  # 測定値の時系列データ
+        fs=framerate,       # サンプリング頻度←waveフレームレート
+        window='hamming',   # 窓関数:ハミング窓を使用
+        nperseg=N,          # セグメント長
+        noverlap=N-100,     # セグメント間でオーバラップするサイズ
+        detrend=False,      # トレンド除去しない
+        scaling='spectrum') # スペクトログラム変数：V**2パワースペクトルを計算
+
+    # グラフ描画
+    f, ax = plt.subplots()
+    # X軸:times(秒) Y軸:freqs/1000(kHz) C軸(色): Sxの対数×10 
+    ax.pcolormesh(times, freqs/1000, 10* np.log10(Sx), cmap='viridis')
+    ax.set_ylabel('Frequency[kHz]')
+    ax.set_xlabel('Time[s]')
+    if path is None:
+        path = 'spectgram_' + datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + '.png'
+    plt.show()
 
 #if __name__ == '__main__':
     #print(_get_date_format_path())
