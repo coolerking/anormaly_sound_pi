@@ -97,7 +97,7 @@ def get_scores(dirpath:str) -> list:
     list            要素[<ファイル名>, <スコア>] のリスト
     """
     scores = []
-    files = get_all_path(path=dirpath)
+    files = get_all_path(prefix='', path=dirpath)
     for file in files:
         score = []
         # 異常判定スコア計算
